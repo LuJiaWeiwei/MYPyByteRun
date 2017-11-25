@@ -90,6 +90,8 @@ class VirtualMachine(object):
 
     '''The following is functions managing block_stack'''
     def push_block(self, type, handler=None, level=None):
+        if log.isEnabledFor(logging.INFO):
+            print(type)
         if level is None:
             level = len(self.frame.stack)
         self.frame.block_stack.append(Block(type, handler, level))
@@ -104,8 +106,11 @@ class VirtualMachine(object):
         # This function may be recursively called, we can output its disassembly
         #code, to see the procedure.Except being called in this file, it also can
         # be called by Frame itself.
-        log.debug("%s" % dis.dis(code))
-        log.info("make_frame: code=%r, callargs=%s" % (code, repper(callargs)))
+        if log.isEnabledFor(logging.INFO):
+            print()
+            log.info("make_frame: code=%r, callargs=%s" % (code, repper(callargs)))
+            dis.dis(code.co_code)
+            print()
         if f_globals is not None:
             f_globals = f_globals
             if f_locals is None:
@@ -709,6 +714,7 @@ class VirtualMachine(object):
                 to.softspace = 1
         else:
             to.softspace = 1
+
 
     def print_newline(self, to=None):
         if to is None:
