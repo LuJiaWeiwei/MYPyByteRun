@@ -1,4 +1,5 @@
 try:
-    1/0
+    raise(Exception('yeyeyyeyeye'))
 except Exception as e:
     print(e)
+    raise(e)

@@ -1087,20 +1087,16 @@ class VirtualMachine(object):
         stmt, globs, locs = self.popn(3)
         six.exec_(stmt, globs, locs)
 
-    if PY2:
-        def byte_BUILD_CLASS(self):
-            name, bases, methods = self.popn(3)
-            self.push(type(name, bases, methods))
+    def byte_BUILD_CLASS(self):
+        name, bases, methods = self.popn(3)
+        self.push(type(name, bases, methods))
 
 
-    elif PY3:
-        def byte_LOAD_BUILD_CLASS(self):
-            # New in py3
-            self.push(__build_class__)
+    def byte_LOAD_BUILD_CLASS(self):
+        self.push(__build_class__)
 
-        def byte_STORE_LOCALS(self):
-            self.frame.f_locals = self.pop()
+    def byte_STORE_LOCALS(self):
+        self.frame.f_locals = self.pop()
 
-    if 0:   # Not in py2.7
-        def byte_SET_LINENO(self, lineno):
-            self.frame.f_lineno = lineno
+    def byte_SET_LINENO(self, lineno):
+        self.frame.f_lineno = lineno

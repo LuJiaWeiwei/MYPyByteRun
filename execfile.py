@@ -5,12 +5,14 @@ import imp
 import os
 import sys
 import tokenize
+import logging
 
 sys.path.append(os.getcwd())
 #sys.path.append("/home/2015jsj/2015112118/byterun/byterun")
 #sys.path.append("/home/2015jsj/2015112118/byterun")
 from pyvm2 import VirtualMachine
 
+log = logging.getLogger(__name__)
 NoSource = Exception
 
 def exec_code_object(code, env):

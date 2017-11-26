@@ -7,7 +7,7 @@ import types
 import six
 
 PY3, PY2 = six.PY3, not six.PY3
-
+i = 0
 
 def make_cell(value):
     # Thanks to Alex Gaynor for help with this bit of twistiness.
@@ -216,10 +216,14 @@ class Generator(object):
     def send(self, value=None):
         if not self.started and value is not None:
             raise TypeError("Can't send non-None value to a just-started generator")
+
         self.gi_frame.stack.append(value)
         self.started = True
         val = self.vm.resume_frame(self.gi_frame)
         if self.finished:
+            global i
+            i += 1
+            print(i)
             raise StopIteration(val)
         return val
 

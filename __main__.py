@@ -52,7 +52,7 @@ if args.module:
 # Directly assigned to analyze a single file function
 run_fn = execfile.run_python_file
 
-# Enable INFO mode, use the log.info() output message in the pyvm file
+# Enable diffrent mode, use diffrent hierarchy to output message in the pyvm file
 if args.step:
     level = logging.DEBUG
 elif args.detail:
