@@ -32,7 +32,6 @@ repr_obj = reprlib.Repr()
 repr_obj.maxother = 120
 repper = repr_obj.repr
 
-
 class VirtualMachineError(Exception):
     """For raising errors in the operation of the VM."""
     pass
@@ -91,7 +90,7 @@ class VirtualMachine(object):
     '''The following is functions managing block_stack'''
     def push_block(self, type, handler=None, level=None):
         if log.isEnabledFor(logging.INFO):
-            print(type)
+            log.info(type)
         if level is None:
             level = len(self.frame.stack)
         self.frame.block_stack.append(Block(type, handler, level))
@@ -375,6 +374,10 @@ class VirtualMachine(object):
         Exceptions are raised, the return value is returned.
 
         """
+        if log.isEnabledFor(logging.INFO):
+            print()
+            log.info("run_frame: code=%r" % (frame.f_code))
+            print()
         self.push_frame(frame)
         while True:
             byteName, arguments, opoffset = self.parse_byte_and_args()
@@ -490,9 +493,15 @@ class VirtualMachine(object):
         f = self.frame
         f.f_globals[name] = self.pop()
 
+    #LOAD_DEREF(i)
+    #Loads the cell contained in slot i of the cell and free variable storage.
+    #Pushes a reference to the object the cell contains on the stack.
     def byte_LOAD_DEREF(self, name):
         self.push(self.frame.cells[name].get())
 
+    #STORE_DEREF(i)
+    #Stores TOS into the cell contained in slot i of the cell and
+    #free variable storage.
     def byte_STORE_DEREF(self, name):
         self.frame.cells[name].set(self.pop())
 
@@ -532,6 +541,7 @@ class VirtualMachine(object):
 
     def binaryOperator(self, op):
         x, y = self.popn(2)
+        print(self.BINARY_OPERATORS[op])
         self.push(self.BINARY_OPERATORS[op](x, y))
 
     def inplaceOperator(self, op):

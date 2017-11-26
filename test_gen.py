@@ -1,10 +1,11 @@
-def f():
+def f(max):
     b = 0
     a = 1
-    while b < a:
+    n = 0
+    while n < max:
         yield a
         a, b = a + b, a
+        n = n + 1
 
-
-for i in range(5):
-    print(f())
+for i in f(4):
+    print(i)

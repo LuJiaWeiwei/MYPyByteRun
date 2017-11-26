@@ -7,12 +7,9 @@ import types
 import six
 
 PY3, PY2 = six.PY3, not six.PY3
-i = 0
+
 
 def make_cell(value):
-    # Thanks to Alex Gaynor for help with this bit of twistiness.
-    # Construct an actual cell object by creating a closure right here,
-    # and grabbing the cell object out of the function we create.
     fn = (lambda x: lambda: x)(value)
     if PY3:
         return fn.__closure__[0]
@@ -61,11 +58,8 @@ class Function(object):
             return self
 
     def __call__(self, *args, **kwargs):
+        print('calll me one time')
         if PY2 and self.func_name in ["<setcomp>", "<dictcomp>", "<genexpr>"]:
-            # D'oh! http://bugs.python.org/issue19611 Py2 doesn't know how to
-            # inspect set comprehensions, dict comprehensions, or generator
-            # expressions properly.  They are always functions of one argument,
-            # so just do the right thing.
             assert len(args) == 1 and not kwargs, "Surprising comprehension!"
             callargs = {".0": args[0]}
         else:
@@ -82,6 +76,7 @@ class Function(object):
         #For instructions that call other functions, recursively generate frames
         #and run with the VirtualMachine class provided during initialization
             retval = self._vm.run_frame(frame)
+            print(retval)
         return retval
 
 class Method(object):
@@ -221,9 +216,6 @@ class Generator(object):
         self.started = True
         val = self.vm.resume_frame(self.gi_frame)
         if self.finished:
-            global i
-            i += 1
-            print(i)
             raise StopIteration(val)
         return val
 
